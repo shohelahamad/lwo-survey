@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umfrage-Fragetypen Demo</title>
+    <link rel="stylesheet" href="umfrage.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Umfrage-Fragetypen Demo</h1>
+            <p class="subtitle">Interaktive Vorschau aller 28 Fragetypen</p>
+        </header>
+
+        <div class="question-type-selector">
+            <button class="type-btn active" data-type="multiple-single">Multiple Choice</button>
+            <button class="type-btn" data-type="multiple-multi">Mehrfachauswahl</button>
+            <button class="type-btn" data-type="likert">Likert-Skala</button>
+            <button class="type-btn" data-type="matrix">Matrix</button>
+            <button class="type-btn" data-type="nps">NPS</button>
+            <button class="type-btn" data-type="stars">Sterne</button>
+            <button class="type-btn" data-type="emoji">Emoji</button>
+            <button class="type-btn" data-type="slider">Slider</button>
+            <button class="type-btn" data-type="text-short">Kurztext</button>
+            <button class="type-btn" data-type="text-long">Langtext</button>
+            <button class="type-btn" data-type="ranking">Ranking</button>
+            <button class="type-btn" data-type="images">Bildauswahl</button>
+            <button class="type-btn" data-type="yesno">Ja/Nein</button>
+        </div>
+
+        <div class="builder-layout">
+            <div class="builder-panel">
+                <h2 class="builder-heading">Frage bearbeiten</h2>
+                <p class="builder-subtitle">Wählen Sie oben einen Fragetyp und passen Sie Inhalte, Optionen und Hinweise an.</p>
+                <div class="editor-field">
+                    <label for="questionTitle">Fragetitel</label>
+                    <input type="text" id="questionTitle" placeholder="Titel eingeben">
+                </div>
+                <div class="editor-field">
+                    <label for="questionDescription">Fragebeschreibung</label>
+                    <textarea id="questionDescription" rows="3" placeholder="Beschreibung oder Zusatzinfo"></textarea>
+                </div>
+                <div class="editor-field">
+                    <label for="questionInfo">Hinweisbox</label>
+                    <textarea id="questionInfo" rows="2" placeholder="Kontext oder Einsatzbereich"></textarea>
+                </div>
+                <div class="editor-field">
+                    <div class="editor-field-label">Antwortoptionen</div>
+                    <div id="optionEditor" class="option-editor"></div>
+                </div>
+                <div class="editor-field">
+                    <div class="editor-field-label">Weitere Einstellungen</div>
+                    <div id="settingsEditor" class="settings-editor"></div>
+                </div>
+            </div>
+            <div class="builder-preview">
+                <h2 class="builder-heading">Live-Vorschau</h2>
+                <p class="builder-subtitle">Alle Änderungen werden sofort angezeigt.</p>
+                <div id="questionPreview" class="preview-placeholder">Wählen Sie einen Fragetyp und passen Sie Inhalte an.</div>
+            </div>
+        </div>
+        <div class="builder-actions">
+            <button id="addSectionBtn" class="secondary-btn">Weitere Sektion hinzufügen</button>
+            <button id="finishBtn" class="primary-btn">Bearbeitung abschließen</button>
+        </div>
+        <section class="sections-list">
+            <div class="sections-header">
+                <div>
+                    <h2>Erstellte Frage-Sektionen</h2>
+                    <p>Fügen Sie beliebig viele Sektionen hinzu und bearbeiten oder entfernen Sie diese.</p>
+                </div>
+                <span class="badge" id="sectionCount">0</span>
+            </div>
+            <div id="sectionsContainer" class="sections-container"></div>
+        </section>
+    </div>
+    <script src="umfrage.js"></script>
+</body>
+</html>
