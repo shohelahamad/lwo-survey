@@ -421,6 +421,20 @@
 
         .question-content {
             margin-bottom: var(--space-20);
+            overflow-x: auto;
+        }
+
+        .question-content::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .question-content::-webkit-scrollbar-thumb {
+            background: rgba(var(--color-brown-600-rgb), 0.3);
+            border-radius: 999px;
+        }
+
+        .question-content::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         .option {
