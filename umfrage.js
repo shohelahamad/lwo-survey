@@ -720,15 +720,45 @@
         renderSectionsList();
     };
 
+    const buildExportPayload = () => ({
+        version: 1,
+        generatedAt: new Date().toISOString(),
+        sectionCount: state.sections.length,
+        sections: state.sections.map((question, index) => ({
+            order: index + 1,
+            id: question.id,
+            type: question.type,
+            title: question.title,
+            description: question.description,
+            info: question.info,
+            required: Boolean(question.required),
+            options: deepClone(question.options),
+            settings: deepClone(question.settings)
+        }))
+    });
+
+    const downloadJsonFile = (json) => {
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `survey-${Date.now()}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
     const finishEditing = () => {
         if (!state.sections.length) {
             alert('Sie haben noch keine Sektionen erstellt. Fügen Sie mindestens eine Sektion hinzu.');
             return;
         }
-        const summary = state.sections
-            .map((section, index) => `${index + 1}. ${section.title} (${typeConfigs[section.type].label})`)
-            .join('\n');
-        alert(`Sie haben ${state.sections.length} Sektionen erstellt:\n\n${summary}`);
+        const payload = buildExportPayload();
+        const json = JSON.stringify(payload, null, 2);
+        downloadJsonFile(json);
+        console.log('Exportierte Survey-Struktur:', payload);
+        alert('Die Survey-Struktur wurde als JSON-Datei heruntergeladen.');
     };
 
     const handleTypeSelection = (type) => {
@@ -778,6 +808,12 @@
             state.currentQuestion.required = event.target.checked;
             renderPreview();
         });
+        if (elements.copyJsonBtn) {
+            elements.copyJsonBtn.addEventListener('click', copyJsonToClipboard);
+        }
+        if (elements.downloadJsonBtn) {
+            elements.downloadJsonBtn.addEventListener('click', downloadJsonFile);
+        }
     };
 
     init();
