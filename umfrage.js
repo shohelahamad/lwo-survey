@@ -417,6 +417,7 @@
         addSectionBtn: document.getElementById('addSectionBtn'),
         finishBtn: document.getElementById('finishBtn'),
         sectionsContainer: document.getElementById('sectionsContainer'),
+        requiredInput: document.getElementById('questionRequired'),
         sectionCount: document.getElementById('sectionCount')
     };
 
@@ -431,6 +432,7 @@
             title: defaults.title || config?.label || 'Frage',
             description: defaults.description || '',
             info: defaults.info || '',
+            required: Boolean(defaults.required),
             options: defaults.options ? deepClone(defaults.options) : {},
             settings: defaults.settings ? deepClone(defaults.settings) : {}
         };
@@ -469,10 +471,14 @@
         if (!config) return '';
         const content = config.render(question);
         const info = question.info ? `<div class="info-box"><strong>Hinweis:</strong> ${escapeHtml(question.info)}</div>` : '';
+        const requiredBadge = question.required ? '<span class="required-badge">Pflichtfeld</span>' : '';
         return `
             <div class="question-card" data-type="${question.type}">
                 <div class="question-header">
-                    <h2 class="question-title">${escapeHtml(question.title)}</h2>
+                    <div class="question-title-row">
+                        <h2 class="question-title">${escapeHtml(question.title)}</h2>
+                        ${requiredBadge}
+                    </div>
                     <p class="question-description">${escapeHtml(question.description)}</p>
                 </div>
                 ${content}
@@ -500,6 +506,7 @@
         elements.titleInput.value = state.currentQuestion.title || '';
         elements.descriptionInput.value = state.currentQuestion.description || '';
         elements.infoInput.value = state.currentQuestion.info || '';
+        elements.requiredInput.checked = Boolean(state.currentQuestion.required);
         renderOptionEditor();
         renderSettingsEditor();
         elements.addSectionBtn.textContent = state.currentIndex === null ? 'Weitere Sektion hinzufügen' : 'Sektion aktualisieren';
@@ -767,6 +774,10 @@
         elements.addSectionBtn.addEventListener('click', addOrUpdateSection);
         elements.finishBtn.addEventListener('click', finishEditing);
         elements.sectionsContainer.addEventListener('click', handleSectionAction);
+        elements.requiredInput.addEventListener('change', (event) => {
+            state.currentQuestion.required = event.target.checked;
+            renderPreview();
+        });
     };
 
     init();
