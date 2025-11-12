@@ -362,12 +362,20 @@
             }),
             render: (question) => {
                 const items = getOptionList(question, 'items', ['Design A']);
-                const content = items.map((item) => `
-                    <div class="image-option">
-                        <div class="image-placeholder">🖼️</div>
-                        <div>${escapeHtml(item)}</div>
-                    </div>
-                `).join('');
+                const storedImages = Array.isArray(question.settings?.imageChoices) ? question.settings.imageChoices : [];
+                const content = items.map((item, index) => {
+                    const imageEntry = storedImages[index];
+                    const hasImage = Boolean(imageEntry?.data);
+                    const visual = hasImage
+                        ? `<div class="image-option-visual"><img src="${escapeAttr(imageEntry.data)}" alt="${escapeAttr(item)}"></div>`
+                        : `<div class="image-placeholder">🖼️</div>`;
+                    return `
+                        <div class="image-option">
+                            ${visual}
+                            <div>${escapeHtml(item)}</div>
+                        </div>
+                    `;
+                }).join('');
                 return `<div class="question-content"><div class="image-options">${content}</div></div>`;
             }
         },
@@ -495,6 +503,29 @@
         elements.preview.innerHTML = renderQuestion(state.currentQuestion);
     };
 
+    const emitOptionEditorRendered = () => {
+        if (typeof document === 'undefined') return;
+        const detail = {
+            state,
+            elements,
+            refreshPreview: renderPreview,
+            refreshOptionEditor: renderOptionEditor,
+            getCurrentConfig
+        };
+        if (typeof window !== 'undefined') {
+            window.__umfrageLastOptionEditorDetail = detail;
+        }
+        const dispatch = () => document.dispatchEvent(new CustomEvent('umfrage:optionEditorRendered', { detail }));
+        if (typeof CustomEvent === 'function') {
+            dispatch();
+        } else if (typeof document.createEvent === 'function') {
+            const event = document.createEvent('Event');
+            event.initEvent('umfrage:optionEditorRendered', true, true);
+            event.detail = detail;
+            document.dispatchEvent(event);
+        }
+    };
+
     const updateTypeButtons = () => {
         elements.typeButtons.forEach((btn) => {
             btn.classList.toggle('active', btn.dataset.type === state.selectedType);
@@ -517,6 +548,7 @@
         elements.optionEditor.innerHTML = '';
         if (!config?.optionGroups?.length) {
             elements.optionEditor.innerHTML = '<p class="muted">Keine editierbaren Optionen für diesen Fragetyp.</p>';
+            emitOptionEditorRendered();
             return;
         }
 
@@ -551,6 +583,7 @@
         }).join('');
 
         elements.optionEditor.innerHTML = groupsHtml;
+        emitOptionEditorRendered();
     };
 
     const renderSettingsEditor = () => {
