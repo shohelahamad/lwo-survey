@@ -473,12 +473,16 @@
 
     const escapeAttr = escapeHtml;
 
+    const formatMultilineText = (value) => escapeHtml(value).replace(/\r?\n/g, '<br>');
+
     const renderQuestion = (question) => {
         if (!question) return '';
         const config = typeConfigs[question.type];
         if (!config) return '';
         const content = config.render(question);
-        const info = question.info ? `<div class="info-box"><strong>Hinweis:</strong> ${escapeHtml(question.info)}</div>` : '';
+        const info = question.info
+            ? `<div class="info-box"><strong>Hinweis:</strong> ${formatMultilineText(question.info)}</div>`
+            : '';
         const requiredBadge = question.required ? '<span class="required-badge">Pflichtfeld</span>' : '';
         return `
             <div class="question-card" data-type="${question.type}">

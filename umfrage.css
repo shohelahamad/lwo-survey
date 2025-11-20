@@ -788,6 +788,7 @@
             padding: var(--space-16);
             margin-top: var(--space-16);
             border-radius: var(--radius-base);
+            text-align: left;
         }
 
         .info-box strong {
